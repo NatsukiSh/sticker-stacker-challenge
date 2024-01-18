@@ -37,6 +37,9 @@ function draw() {
       const cell = document.createElement("div");
       cell.classList.add("cell");
 
+      //1 == 1 --equality
+      //1 === 1 --strict equality-compares the value AND the data type
+
       if (cellContent === 1) {
         cell.classList.add("bar");
       }
@@ -46,4 +49,120 @@ function draw() {
   });
 }
 
+//Game Logic and Controls
+function endGame(isVictory) {
+  if (isVictory) {
+    endGameText.innerHTML = "YOU<br>WON!";
+    endGameScreen.classList.add("win");
+  }
+
+  endGameScreen.classList.remove("hidden");
+}
+
+function checkWin() {
+  //we win if we get to the top of the grid
+  if (currentRowIndex === 0) {
+    isGameOver = true;
+    clearInterval(gameInterval);
+    endGame(true);
+  }
+}
+
+function checkLost() {
+  const currentRow = gridMatrix[currentRowIndex];
+  const prevRow = gridMatrix[currentRowIndex + 1];
+
+  if (!prevRow) return;
+
+  //check whether there is at least one accumulated stack
+  //element under each bar
+  for (let i = 0; i < currentRow.length; i++) {
+    //if there is no accumulated stack below a bar element
+    //remove the 1 bar piece for both the current stack
+    //and for the new bar in the next loop
+    if (currentRow[i] === 1 && prevRow[i] === 0) {
+      currentRow[i] = 0;
+      barSize--;
+    }
+
+    if (barSize === 0) {
+      isGameOver = true;
+      clearInterval(gameInterval);
+      endGame(false);
+    }
+  }
+}
+
+function updateScore() {
+  //score = score + barSize
+  score += barSize;
+  scoreCounter.innerHTML = score.toString().padStart(5, 0);
+}
+
+function onStack() {
+  checkWin();
+  checkLost();
+
+  if (isGameOver) return;
+  updateScore();
+
+  //  currentRowIndex--;
+  currentRowIndex = currentRowIndex - 1;
+  barDirection = "right";
+
+  for (let i = 0; i < barSize; i++) {
+    gridMatrix[currentRowIndex][i] = 1;
+  }
+
+  draw();
+}
+
+function moveRight(currentRow) {
+  currentRow.pop(); //[1, 1, 1, 0, 0, 0]
+  currentRow.unshift(0); //[0, 1, 1, 1, 0, 0]
+}
+
+function moveLeft(currentRow) {
+  currentRow.shift(); //[0, 0, 1, 1, 1, 0]
+  currentRow.push(0); //[0, 0, 1, 1, 1, 0]
+}
+
+function moveBar() {
+  const currentRow = gridMatrix[currentRowIndex];
+
+  if (barDirection === "right") {
+    moveRight(currentRow);
+
+    //[0, 0, 0, 1, 1, 1]
+    const lastElement = currentRow[currentRow.length - 1];
+    if (lastElement === 1) {
+      barDirection = "left ";
+    }
+  } else if (barDirection === "left") {
+    moveLeft(currentRow);
+
+    const firstElement = currentRow[0];
+
+    if (firstElement === 1) {
+      barDirection = "right";
+    }
+  }
+}
+
+//Initial draw on first page load
 draw();
+
+//These are "move bar" function calls
+function main() {
+  moveBar();
+  draw();
+}
+
+function onPlayAgain() {
+  window.location.reload();
+}
+
+//Events
+stackBtn.addEventListener("click", onStack);
+playAgainBtn.addEventListener("click", onPlayAgain);
+const gameInterval = setInterval(main, 600);
