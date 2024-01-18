@@ -5,6 +5,7 @@ const scoreCounter = document.querySelector(".score-counter");
 const endGameScreen = document.querySelector(".end-game-screen");
 const endGameText = document.querySelector(".end-game-text");
 const playAgainBtn = document.querySelector(".play-again");
+let scrollSpeed = 600;
 
 //Create game grid matrix
 //0-empty cell
@@ -103,12 +104,11 @@ function updateScore() {
 function onStack() {
   checkWin();
   checkLost();
-
-  if (isGameOver) return;
   updateScore();
 
-  //  currentRowIndex--;
-  currentRowIndex = currentRowIndex - 1;
+  if (isGameOver) return;
+
+  currentRowIndex--;
   barDirection = "right";
 
   for (let i = 0; i < barSize; i++) {
@@ -137,12 +137,12 @@ function moveBar() {
     //[0, 0, 0, 1, 1, 1]
     const lastElement = currentRow[currentRow.length - 1];
     if (lastElement === 1) {
-      barDirection = "left ";
+      barDirection = "left";
     }
   } else if (barDirection === "left") {
     moveLeft(currentRow);
 
-    const firstElement = currentRow[0];
+    const firstElement = currentRow[0]; //zeroth index is the first element of the array
 
     if (firstElement === 1) {
       barDirection = "right";
@@ -166,4 +166,6 @@ function onPlayAgain() {
 //Events
 stackBtn.addEventListener("click", onStack);
 playAgainBtn.addEventListener("click", onPlayAgain);
-const gameInterval = setInterval(main, 600);
+
+// how fast the bar scrolls
+const gameInterval = setInterval(main, scrollSpeed);
