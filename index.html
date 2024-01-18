@@ -13,5 +13,27 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <script src="./script.js"></script>/body>
+    <div class="game-container">
+      <header class="game-panel">
+        <h1>Stacker</h1>
+        <div class="score">
+          <span>SCORE</span>
+          <span class="score-counter">00000</span>
+        </div>
+      </header>
+      <main class="game-board">
+        <!-- This will stay empty in HTML, generate this in JS-->
+        <div class="grid"></div>
+        <div class="end-game-screen hidden">
+          <h2 class="end-game-text">
+            Game <br />
+            OVER
+          </h2>
+          <button class="btn play-again">Play Again</button>
+        </div>
+      </main>
+      <button class="btn btn-full stack">Stack</button>
+    </div>
+    <script src="./script.js"></script>
+  </body>
 </html>
