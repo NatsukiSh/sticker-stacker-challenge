@@ -102,8 +102,8 @@ function updateScore() {
 }
 
 function onStack() {
-  checkWin();
   checkLost();
+  checkWin();
   updateScore();
 
   if (isGameOver) return;
